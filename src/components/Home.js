@@ -4,8 +4,8 @@ import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
 const Home = () => {
   return (
-    <>
-      <h1>Delicious!</h1>
+    <div>
+      <header><h1>Lambda Eats</h1></header>
           <img
               className="home-img"
               src="https://cdn.pixabay.com/photo/2020/05/17/04/22/pizza-5179939_1280.jpg"
@@ -15,14 +15,16 @@ const Home = () => {
       <Router>
         {/*---links---*/}
         <nav className="navbar">
-          <Link to="/Form">Form</Link>
+          <Link to="/Form">Build your own...</Link>
         </nav>
         {/*---routes---*/}
         <div className="App">   
-          <Route path="/Form" component={Form} />
-      </div>
+          <Route path="/Form">
+            <Form />
+          </Route>
+        </div>
       </Router>
-    </>
+    </div>
   );
 };
 export default Home;

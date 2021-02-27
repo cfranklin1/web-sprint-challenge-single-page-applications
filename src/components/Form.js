@@ -7,26 +7,25 @@ export default function Form() {
 
 
   return (
-    
-    <>
-     <div>
+
          <div>
-             
                 <Router>
                     {/*---links---*/}
-                    <nav className="navbar">
-                        <Link to="/Pizza">Pizza</Link>
+                    <nav className="pizza-nav">
+                        <Link to="/Pizza">pizza!</Link>
                     </nav>
                     {/*---routes---*/}
-                    <div className="App">   
-                        <Route path="/Pizza" component={Pizza} />
+                    <div className="pizza-div">   
+                        <Route path="/Pizza">
+                            <Pizza />
+                        </Route>
                     </div>
                 </Router>
                 
 
          </div>
-     </div>
-    </>
+
+
   );
 };
 
