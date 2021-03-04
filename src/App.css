@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+.app-div {
+  margin: 2rem;
+}
+header {
+  background-color: maroon;
+  padding: .1rem;
+  margin: 1rem;
+}
+
+.home-img {
+  width: 65%;
+  border-radius: 50%;
+  
+}
+
+
+form {
+  margin: 1rem;
+  padding: 1rem;
+}
+
+
