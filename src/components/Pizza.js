@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import axios from '../axios'
+import axios from '../axios';
 import Form from './Form';
+import formSchema from '../validation/formSchema';
 import * as yup from 'yup';
+
 
     const initialState = {
         username: '',
@@ -13,13 +15,20 @@ import * as yup from 'yup';
         jalepenos: false,
 
     };
-
+    const initialErrors = {
+        username: '',
+        size: '',
+        instructions: '',
+        
+    }
     const initialPizzas = []
+    const initialDisabled = true
 
 export default function Pizza() {
     const [pizzas, setPizzas] = useState(initialPizzas);
     const [form, setForm] = useState(initialState);
-
+    const [errors, setErrors] = useState(initialErrors);
+    const [disabled, setDisabled] = useState(initialDisabled)
 
     const postNewOrder = newPizza => {
         axios.post('(https://reqres.in/', newPizza)
@@ -39,12 +48,29 @@ export default function Pizza() {
             instructions: form.instructions.trim(),
             toppings: ['pepperoni', 'sausage', 'bacon', 'jalepenos'].filter(topping => form[topping])
         }
+        
     }
     const inputChange = (name, value) => {
+       
+        yup
+            .reach(formSchema, name)
+            .validate(value)
+            .then(valid => {
+                setErrors({
+                    ...errors, [name]: ""
+                });
+            })
+            .catch(err => {
+                setErrors({
+                    ...errors, [name]: err.errors[0]
+                });
+            }); 
+        
         setForm({
             ...Form, [name]: value
-        })
-    }
+        });
+    };
+   
 
     const onChange = e => {
         const { name, type, value, checked } = e.target;
@@ -58,20 +84,24 @@ export default function Pizza() {
         submitForm()
         postNewOrder()
     }
+    useEffect(() => {
+        formSchema.isValid(form).then(valid => {
+            setDisabled(!valid)
+        });
+    }, [form]);
 
+ 
 
-    const formSchema = yup.Object().shape({
-        username: yup
-            .min(2, "Must be at least 2 characters!")
-    })
 
     return(
 
-        <div><form>
+        <div>
+            <form clasName='form-container' onSubmit={onSubmit}>
             <label>name:
                 <input type="text" value={form.username}
                     name="username" onChange={onChange} />
             </label><br />
+            { errors.username.length > 0 && <p className="error">{errors.username}</p>}
             {/*---dropdown----*/}
             <label>size:
                 <select name="size" onChange={onChange}> 
@@ -106,7 +136,9 @@ export default function Pizza() {
                     name="instructions"  onChange={onChange} />
             </label><br />
 
-            <button onSubmit={onSubmit}>add to order</button>
-        </form></div>
+            <button type="submit" >Add to Order</button>
+        </form>
+        </div>
     )
 }
+
