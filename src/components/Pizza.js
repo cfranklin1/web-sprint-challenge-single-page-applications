@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import axios from '../axios';
-import Form from './Form';
 import formSchema from '../validation/formSchema';
 import * as yup from 'yup';
 
 
-    const initialState = {
+    const initialValues = {
         username: '',
         size: '',
         instructions: '',
@@ -21,33 +20,46 @@ import * as yup from 'yup';
         instructions: '',
         
     }
-    const initialPizzas = []
+    
     const initialDisabled = true
 
 export default function Pizza() {
-    const [pizzas, setPizzas] = useState(initialPizzas);
-    const [form, setForm] = useState(initialState);
+    const [pizzas, setPizzas] = useState([]);
+    const [formValues, setFormValues] = useState(initialValues);
     const [errors, setErrors] = useState(initialErrors);
     const [disabled, setDisabled] = useState(initialDisabled)
 
-    const postNewOrder = newPizza => {
-        axios.post('(https://reqres.in/', newPizza)
+    const getPizzas = () => {
+        axios.get('https://reqres.in/')
             .then(res => {
-                setPizzas([res.data, ...pizzas])
-                console.log(res.data)
+            setPizzas([res.data])
             })
             .catch(err => {
                 console.log(err)
             })
-            setForm(initialState)
+    }
+    const postNewOrder = newPizza => {
+        axios.post('https://reqres.in/', newPizza)
+            .then(res => {
+                setPizzas([res.data, ...pizzas])
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            setFormValues(initialValues)
+            setPizzas([...pizzas, newPizza])
     }
     const submitForm = () => {
         const newPizza = {
-            username: form.username.trim(),
-            size: form.size.trim(),
-            instructions: form.instructions.trim(),
-            toppings: ['pepperoni', 'sausage', 'bacon', 'jalepenos'].filter(topping => form[topping])
+            username: formValues.username.trim(),
+            size: formValues.size.trim(),
+            instructions: formValues.instructions.trim(),
         }
+
+        if (!newPizza.username || !newPizza.size || !newPizza.instructions) {
+            return;
+          }
+          postNewOrder()
         
     }
     const inputChange = (name, value) => {
@@ -66,8 +78,8 @@ export default function Pizza() {
                 });
             }); 
         
-        setForm({
-            ...Form, [name]: value
+        setFormValues({
+            ...formValues, [name]: value
         });
     };
    
@@ -76,20 +88,21 @@ export default function Pizza() {
         const { name, type, value, checked } = e.target;
         const updatedInfo = type === 'checkbox' ? checked : value
         inputChange(name, updatedInfo)
-        console.log('changing!')
       };
 
     const onSubmit = e => {
         e.preventDefault();
         submitForm()
-        postNewOrder()
+        return formValues
     }
     useEffect(() => {
-        formSchema.isValid(form).then(valid => {
+        formSchema.isValid(formValues).then(valid => {
             setDisabled(!valid)
         });
-    }, [form]);
-
+    }, [formValues]);
+    // useEffect(() => {
+    //     getPizzas()
+    // }, [])
  
 
 
@@ -98,7 +111,7 @@ export default function Pizza() {
         <div>
             <form clasName='form-container' onSubmit={onSubmit}>
             <label>name:
-                <input type="text" value={form.username}
+                <input type="text" value={formValues.username}
                     name="username" onChange={onChange} />
             </label><br />
             { errors.username.length > 0 && <p className="error">{errors.username}</p>}
@@ -117,22 +130,22 @@ export default function Pizza() {
             {/*---check----*/}
             <label>pepperoni:
                 <input type="checkbox"
-                    name="pepperoni"  checked={form.pepperoni} onChange={onChange}/>
+                    name="pepperoni"  checked={formValues.pepperoni} onChange={onChange}/>
             </label>
             <label>sausage:
                 <input type="checkbox"
-                    name="sausage"  checked={form.sausage} onChange={onChange}/>
+                    name="sausage"  checked={formValues.sausage} onChange={onChange}/>
             </label>
             <label>bacon:
                 <input type="checkbox"
-                    name="bacon"  checked={form.bacon} onChange={onChange}/>
+                    name="bacon"  checked={formValues.bacon} onChange={onChange}/>
             </label>
             <label>jalepenos:
                 <input type="checkbox"
-                    name="jalepenos"  checked={form.jalepenos} onChange={onChange}/>
+                    name="jalepenos"  checked={formValues.jalepenos} onChange={onChange}/>
             </label><br />
             <label>instructions:
-                <input type="text" value={form.instructions}
+                <input type="text" value={formValues.instructions}
                     name="instructions"  onChange={onChange} />
             </label><br />
 
