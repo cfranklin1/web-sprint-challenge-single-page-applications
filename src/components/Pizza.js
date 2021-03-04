@@ -3,7 +3,6 @@ import axios from '../axios';
 import formSchema from '../validation/formSchema';
 import * as yup from 'yup';
 
-
     const initialValues = {
         username: '',
         size: '',
@@ -30,7 +29,7 @@ export default function Pizza() {
     const [disabled, setDisabled] = useState(initialDisabled)
 
     const getPizzas = () => {
-        axios.get('https://reqres.in/')
+        axios.get('https://reqres.in/api/users')
             .then(res => {
             setPizzas([res.data])
             })
@@ -39,7 +38,7 @@ export default function Pizza() {
             })
     }
     const postNewOrder = newPizza => {
-        axios.post('https://reqres.in/', newPizza)
+        axios.post('https://reqres.in/api/users')
             .then(res => {
                 setPizzas([res.data, ...pizzas])
             })
@@ -59,7 +58,7 @@ export default function Pizza() {
         if (!newPizza.username || !newPizza.size || !newPizza.instructions) {
             return;
           }
-          postNewOrder()
+          return postNewOrder()
         
     }
     const inputChange = (name, value) => {
