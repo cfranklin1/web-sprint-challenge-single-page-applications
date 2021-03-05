@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import axios from '../axios';
+import axios from 'axios';
 import formSchema from '../validation/formSchema';
 import * as yup from 'yup';
 
@@ -29,7 +29,7 @@ export default function Pizza() {
     const [disabled, setDisabled] = useState(initialDisabled)
 
     const getPizzas = () => {
-        axios.get('https://reqres.in/api/users')
+        axios.get('https://reqres.in/api/pizzas')
             .then(res => {
             setPizzas([res.data])
             })
@@ -37,8 +37,9 @@ export default function Pizza() {
                 console.log(err)
             })
     }
+
     const postNewOrder = newPizza => {
-        axios.post('https://reqres.in/api/users')
+        axios.post('https://reqres.in/api/pizzas', newPizza)
             .then(res => {
                 setPizzas([res.data, ...pizzas])
             })
@@ -48,19 +49,7 @@ export default function Pizza() {
             setFormValues(initialValues)
             setPizzas([...pizzas, newPizza])
     }
-    const submitForm = () => {
-        const newPizza = {
-            username: formValues.username.trim(),
-            size: formValues.size.trim(),
-            instructions: formValues.instructions.trim(),
-        }
-
-        if (!newPizza.username || !newPizza.size || !newPizza.instructions) {
-            return;
-          }
-          return postNewOrder()
-        
-    }
+    
     const inputChange = (name, value) => {
        
         yup
@@ -81,6 +70,32 @@ export default function Pizza() {
             ...formValues, [name]: value
         });
     };
+
+
+    const submitForm = () => {
+        const newPizza = {
+            username: formValues.username.trim(),
+            size: formValues.size.trim(),
+            instructions: formValues.instructions.trim(),
+        }
+
+        if (!newPizza.username || !newPizza.size || !newPizza.instructions) {
+            return;
+        }
+        
+        postNewOrder(newPizza);
+        
+    }
+    
+    useEffect(() => {
+        formSchema.isValid(formValues).then(valid => {
+            setDisabled(!valid)
+        })
+        
+        getPizzas()
+
+    }, [formValues])
+
    
 
     const onChange = e => {
@@ -90,25 +105,20 @@ export default function Pizza() {
       };
 
     const onSubmit = e => {
-        e.preventDefault();
+        e.preventDefault()
         submitForm()
-        return formValues
+        console.log(pizzas)
     }
-    useEffect(() => {
-        formSchema.isValid(formValues).then(valid => {
-            setDisabled(!valid)
-        });
-    }, [formValues]);
-    // useEffect(() => {
-    //     getPizzas()
-    // }, [])
- 
+    
 
+    
+ 
+    
 
     return(
 
         <div>
-            <form clasName='form-container' onSubmit={onSubmit}>
+            <form className='form-container' >
             <label>name:
                 <input type="text" value={formValues.username}
                     name="username" onChange={onChange} />
@@ -148,7 +158,7 @@ export default function Pizza() {
                     name="instructions"  onChange={onChange} />
             </label><br />
 
-            <button type="submit" >Add to Order</button>
+            <button type="submit" onSubmit={onSubmit} >Add to Order</button>
         </form>
         </div>
     )

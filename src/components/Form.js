@@ -12,7 +12,7 @@ export default function Form() {
                 <Router>
                     {/*---links---*/}
                     <nav className="pizza-nav">
-                        <Link to="/Pizza">pizza!</Link>
+                        <Link to="/Pizza" className="pizza-link">pizza!</Link>
                     </nav>
                     {/*---routes---*/}
                     <div className="pizza-div">   

@@ -3,7 +3,6 @@ import Home from "./components/Home";
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import './App.css';
 
-
 const App = () => {
   return (
    
@@ -11,7 +10,7 @@ const App = () => {
       <Router>
       {/*---links---*/}
       <nav className="navbar">
-        <Link to="/"><button>Pizza?</button></Link>
+        <Link to="/" className='pizza-button'><button >Pizza?</button></Link>
                   
       </nav>
       {/*---routes---*/}

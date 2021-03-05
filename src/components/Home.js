@@ -15,7 +15,7 @@ const Home = () => {
       <Router>
         {/*---links---*/}
         <nav className="navbar">
-          <Link to="/Form">Build your own...</Link>
+          <Link to="/Form" className="build-link">Build your own...</Link>
         </nav>
         {/*---routes---*/}
         <div className="App">   
